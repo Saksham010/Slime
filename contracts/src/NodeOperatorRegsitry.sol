@@ -28,11 +28,15 @@ contract NodeOperatorRegistry is INodeOperatorRegsitry{
         emit OperatorRegistered(_controllingAddress,_rewardAddress);
     }   
 
-    function registerValidator(bytes32[] calldata _pubkeys, bytes32[] calldata _signature) public {
+    function registerValidator(bytes calldata _pubkeys,bytes calldata _withdrawCredential ,bytes calldata _signature) public {
 
         if(!isOperatorRegistered[msg.sender]) revert CallerNotOperator();
+        if(_pubkeys.length != 48) revert InvalidPubKeyLength();
+        if(_withdrawCredential.length != 32) revert InvalidWithdrawCredentialLength();
+        if(_signature.length != 96) revert InvalidSignatureLength();
 
-        ValidatorDetails memory vld = new ValidatorDetails(_pubkeys,_signature);
+        
+        ValidatorDetails memory vld = new ValidatorDetails(_pubkeys,_withdrawCredential,_signature);
         OperatorDetails memory opd = getOperatorDetailFromAddr(msg.sender);
         opd.activeValidators++;
         getOperatorDetailsFromId[opId] = opd;

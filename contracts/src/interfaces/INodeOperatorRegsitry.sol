@@ -4,10 +4,12 @@ interface INodeOperatorRegistry{
     /**
         * @dev Struct containing details to setup validator in eth staking contract
         * @param pubkey Public keys of the validator
+        * @param withdrawCredential Withdraw credentail based on prefix
         * @param signature Signature of the validator
     */
     struct ValidatorDetails{
         bytes pubkey;
+        bytes withdrawCredential;
         bytes signature; 
     }
 
@@ -83,6 +85,21 @@ interface INodeOperatorRegistry{
     */
     error ZeroAddress();
 
+    /**
+        * @dev Throws when pub key length is not 48 bytes
+    */
+    error InvalidPubKeyLength();
+
+    /**
+        * @dev Throws when withdraw credential length is not 32 bytes
+    */
+    error InvalidWithdrawCredentialLength();
+
+    /**
+        * @dev Throws when signature length is not 96 bytes
+    */
+    error InvalidSignatureLength();
+
     // ************************************
     // ***** External  methods ******
 
@@ -96,10 +113,11 @@ interface INodeOperatorRegistry{
     
     /**
         * @dev Register a validator
-        * @param _pubkeys Public keys for the validators
+        * @param _pubkeys Public key for the validator
+        * @param _withdrawCredential Withdraw credential for validator
         * @param _signature Validator signature
     */
-    function registerValidator(bytes32[] calldata _pubkeys, bytes32[] calldata _signature)external;
+    function registerValidator(bytes calldata _pubkeys, bytes calldata _withdrawCredential, bytes calldata _signature)external;
 
     /**
         * @dev Get operator detail from address
